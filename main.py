@@ -67,12 +67,13 @@ for bulletin in bulletins[1:]:
     title = title.get_text().replace("\n", "")
 
     time = int(bulletin.find("time")["data-timestamp"])
-    time = str(datetime.fromtimestamp(time))
+    time = datetime.fromtimestamp(time)
+    time = time.strftime("%d.%m.%y")
 
-    comments_count = bulletin.findAll("td")[2].get_text().replace("\n", "")
+    comments_count = bulletin.findAll("td")[2].get_text().replace("\n", "")[0]
 
     bulletin_info[title] = {
-        "comments-coun":comments_count,
+        "comments-coun":int(comments_count),
         "bulletin-date":time
         }
     bulletin_link = bulletin.find("a", href=True)["href"]
