@@ -83,7 +83,10 @@ for bulletin in bulletins[1:]:
     '''
     
     # TODO: check if exists bulletin with same id AND content, without counting comments
+    custom_style = open("./custom.css", "r").read()
+
     with open("./bulletins/"+BULLETIN_ID+".html", "w") as outfile:
         outfile.write(str(bulletin_soup))
+        outfile.write(f"<style>{custom_style}</style>")
 
     driver.get(BULLETINS_SITE)
