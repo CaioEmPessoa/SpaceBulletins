@@ -71,6 +71,9 @@ for bulletin in bulletins[1:]:
     bulletin_soup.find("nav").decompose()
     bulletin_soup.find("footer").decompose()
 
+    for meta in bulletin_soup.findAll("meta"):
+        meta.decompose() 
+
     ''' 
     TODO:
     need to remove:
