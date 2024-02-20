@@ -47,19 +47,6 @@ driver.get(BULLETINS_SITE)
 
 ### now its in the logged in and on the right website ###
 
-bulletins_info = {}
-''' How it'll look like
-"Title": {
-    "bulletin-text":"text",
-    "comments-count":1,
-    "comments":{
-        "user-one":"comment",
-        "user-two":"comment"
-    },
-    "bulletin-date":"dd/mm/yy"
-}
-'''
-
 bulletins_soup = BeautifulSoup(driver.page_source, 'html.parser')
 bulletin_table = bulletins_soup.find("table", {"class":"bulletin-table"})
 bulletins = bulletin_table.findAll("tr")
@@ -73,21 +60,30 @@ for bulletin in bulletins[1:]:
 
     comments_count = bulletin.findAll("td")[2].get_text().replace("\n", "")[0]
 
-    bulletin_link = SPACEHEY_URL + bulletin.find("a", href=True)["href"]
+    BULLETIN_URL = bulletin.find("a", href=True)["href"]
+    BULLETIN_LINK = SPACEHEY_URL + BULLETIN_URL
+    BULLETIN_ID = BULLETIN_URL[BULLETIN_URL.find("id=")+3:]
+    print(BULLETIN_ID) 
 
-    driver.get(bulletin_link)
+    driver.get(BULLETIN_LINK)
 
     bulletin_soup = BeautifulSoup(driver.page_source, 'html.parser')
+    bulletin_soup.find("nav").decompose()
+    bulletin_soup.find("footer").decompose()
 
-    bulletin_content = bulletin_soup.find("div", {"class":"content"})
-    bulletin_content = bulletin_content.get_text().replace("\n", "")
+    ''' 
+    TODO:
+    need to remove:
+    report bulletin
+    view profile (maybe)
 
-    bulletins_info[title] = {
-        "comments-coun":int(comments_count),
-        "bulletin-date":time,
-        "content":bulletin_content
-        }
-    driver.get(BULLETINS_SITE)
+    need to create:
+    customstyle, main be centered
+    edit "view bulletins" a tag to point to main page here, index
+    '''
     
+    # TODO: check if exists bulletin with same id AND content, without counting comments
+    with open("./bulletins/"+BULLETIN_ID+".html", "w") as outfile:
+        outfile.write(str(bulletin_soup))
 
-print(bulletins_info)
+    driver.get(BULLETINS_SITE)
