@@ -1,0 +1,111 @@
+/*
+Main SpaceHey Stylesheet
+(c) 2020-2023 SpaceHey.com - tibush GmbH
+*/
+:root {
+    --light-gray: #f2f0f0;
+    --gray: #e3e3e3;
+    --dark-gray: #919191;
+    --darker-gray: #545454;
+    --logo-blue: #1D4ED8;
+    --darker-blue: #1E40AF;
+    --lighter-blue: #60A5FA;
+    --even-lighter-blue: #BFDBFE;
+    --lightest-blue: #DBEAFE;
+    --red: #FF0000;
+    --dark-orange: #ED0707;
+    --light-orange: #f9c56c;
+    --even-lighter-orange: #fcdbb8;
+    --strange-yellow: #dbae2e;
+    --green: #34D399;
+    --light-green: #E6F8DD;
+    --medium-green: #A0C99C;
+    --dark-green: #059669;
+  
+    accent-color: #1D4ED8;
+    accent-color: var(--logo-blue);
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+  html {
+    line-height: 1.225;
+  }
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    background-color: #e3e3e3;
+    background-color: var(--gray);
+    font-family: verdana, arial, sans-serif, helvetica;
+  }
+  .container {
+    width: 810px;
+    max-width: 100%;
+    margin: 0 auto 10px;
+  }
+  .container.full-width {
+    width: auto;
+  }
+  time.ago {
+    opacity: 0;
+  }
+  .soon {
+    opacity: 0.7;
+  }
+  details summary {
+    cursor: pointer;
+    user-select: none;
+  }
+  a {
+    color: #1E40AF;
+    color: var(--darker-blue);
+    text-decoration: none;
+  }
+  a:hover,
+  a:active,
+  .blog-entry .kudos-btn:hover,
+  .blog-entry .kudos-btn:active {
+    color: #c00;
+    text-decoration: underline;
+  }
+  p,
+  ol li,
+  ul:not(nav .links):not(footer .links) li {
+    font-size: 0.875em;
+    font-size: max(0.875em, 12px);
+  }
+  ol li ol li {
+    font-size: 100%;
+  }
+  ul {
+    padding-left: 20px;
+  }
+
+  main {
+    background: white;
+    color: black;
+    padding: 50px;
+    font-size: 80%;
+  }
+  table.forum-table, table.groups-table, table.bulletin-table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+table.comments-table, table.music-table, table.bulletin-table, table.forum-table, table.groups-table {
+    width: 100%;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+user agent stylesheet
+table {
+    display: table;
+    border-collapse: separate;
+    box-sizing: border-box;
+    text-indent: initial;
+    border-spacing: 2px;
+    border-color: gray;
+}
