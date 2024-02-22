@@ -63,13 +63,23 @@ for bulletin in bulletins[1:]:
     BULLETIN_URL = bulletin.find("a", href=True)["href"]
     BULLETIN_LINK = SPACEHEY_URL + BULLETIN_URL
     BULLETIN_ID = BULLETIN_URL[BULLETIN_URL.find("id=")+3:]
-    print(BULLETIN_ID) 
+    print(BULLETIN_ID)
 
     driver.get(BULLETIN_LINK)
 
     bulletin_soup = BeautifulSoup(driver.page_source, 'html.parser')
     bulletin_soup.find("nav").decompose()
     bulletin_soup.find("footer").decompose()
+
+    bulletin_soup.find("p", {"class":"publish-date"}).clear()
+    
+    links_p = bulletin_soup.find("p", {"class":"links"})
+    links_a = links_p.findAll("a")
+    links_a[1].decompose()
+    links_a[2].decompose()
+
+    if int(comments_count)>0:
+        bulletin_soup.find("p", {"class":"report"}).decompose()
 
     for meta in bulletin_soup.findAll("meta"):
         meta.decompose() 
