@@ -5,6 +5,7 @@ from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 
 import os
+import json
 import requests
 from datetime import datetime
 from dotenv import load_dotenv
@@ -17,6 +18,9 @@ PASSWORD = os.getenv("PASSWORD")
 USER_ID = os.getenv("USER_ID")
 SPACEHEY_URL = "https://spacehey.com/"
 BULLETINS_SITE = SPACEHEY_URL + "userbulletins?id=" + USER_ID
+
+with open("./bulletins/bulletinsInfo.json", "r") as read_json:
+    data = json.load(read_json)
 
 options = Options()
 
@@ -56,14 +60,20 @@ for bulletin in bulletins[1:]:
 
     time = int(bulletin.find("time")["data-timestamp"])
     time = datetime.fromtimestamp(time)
-    time = time.strftime("%d.%m.%y")
+    time = time.strftime("%d/%m/%y")
 
     comments_count = bulletin.findAll("td")[2].get_text().replace("\n", "")[0]
 
     BULLETIN_URL = bulletin.find("a", href=True)["href"]
     BULLETIN_LINK = SPACEHEY_URL + BULLETIN_URL
     BULLETIN_ID = BULLETIN_URL[BULLETIN_URL.find("id=")+3:]
-    print(BULLETIN_ID)
+
+    data[BULLETIN_ID] = {
+        "id":BULLETIN_ID,
+        "title":title,
+        "time":time,
+        "comment_count":comments_count
+    }
 
     driver.get(BULLETIN_LINK)
 
@@ -75,6 +85,7 @@ for bulletin in bulletins[1:]:
     
     links_p = bulletin_soup.find("p", {"class":"links"})
     links_a = links_p.findAll("a")
+    links_a[0]["href"] = "../index.html"
     links_a[1].decompose()
     links_a[2].decompose()
 
@@ -84,22 +95,19 @@ for bulletin in bulletins[1:]:
     for meta in bulletin_soup.findAll("meta"):
         meta.decompose() 
 
-    ''' 
-    TODO:
-    need to remove:
-    report bulletin
-    view profile (maybe)
-
-    need to create:
-    customstyle, main be centered
-    edit "view bulletins" a tag to point to main page here, index
-    '''
-    
-    # TODO: check if exists bulletin with same id AND content, without counting comments
-    custom_style = open("./custom.css", "r").read()
-
-    with open("./bulletins/"+BULLETIN_ID+".html", "w") as outfile:
-        outfile.write(str(bulletin_soup))
-        outfile.write(f"<style>{custom_style}</style>")
+    with open("./bulletins/"+BULLETIN_ID+".html", "w") as file:
+        file.write(f"<link rel=\"stylesheet\" href=../styles/main.css>")
+        file.write(f"<link rel=\"stylesheet\" href=../styles/custom.css>")
+        file.write(str(bulletin_soup))
 
     driver.get(BULLETINS_SITE)
+
+with open("./bulletins/bulletinsInfo.json", "w") as write_json:
+    json.dump(data, write_json, indent=4)
+
+## I'm gonna use bs to edit the index page and add the stored bulletins
+## i know this isn't supposed to be used
+## I wanted to use js but it can't read local json so i'm doing this
+with open("./index.html", "r") as read_index:
+    index_soup = BeautifulSoup(read_index.read())
+    print(index_soup)
