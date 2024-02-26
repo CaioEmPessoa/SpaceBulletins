@@ -25,7 +25,7 @@ with open("./bulletins/bulletinsInfo.json", "r") as read_json:
 options = Options()
 
 # don't open the broser
-#options.add_argument("--headless")
+options.add_argument("--headless")
 
 # don't kills chrome when code ends
 #options.add_experimental_option("detach", True) 
@@ -94,8 +94,11 @@ for bulletin in bulletins[1:]:
 
     for meta in bulletin_soup.findAll("meta"):
         meta.decompose() 
+    
+    for link in bulletin_soup.findAll("link"):
+        link.decompose()
 
-    with open("./bulletins/"+BULLETIN_ID+".html", "w") as file:
+    with open("./bulletins/"+BULLETIN_ID+".html", "w", encoding="utf-8") as file:
         file.write(f"<link rel=\"stylesheet\" href=../styles/main.css>")
         file.write(f"<link rel=\"stylesheet\" href=../styles/custom.css>")
         file.write(str(bulletin_soup))
@@ -108,6 +111,45 @@ with open("./bulletins/bulletinsInfo.json", "w") as write_json:
 ## I'm gonna use bs to edit the index page and add the stored bulletins
 ## i know this isn't supposed to be used
 ## I wanted to use js but it can't read local json so i'm doing this
-with open("./index.html", "r") as read_index:
-    index_soup = BeautifulSoup(read_index.read())
-    print(index_soup)
+
+saved_bulletins = os.listdir("./bulletins")
+saved_bulletins.remove("example.html")
+saved_bulletins.remove("bulletinsInfo.json")
+
+with open("./index.html", "r", encoding="utf-8") as read_index:
+    index_soup = BeautifulSoup(read_index.read(), "html.parser")
+    table = index_soup.find("table")
+    
+    #clear all previous bullletins
+    for t in table.findAll("tr")[:-1]:
+        t.decompose()
+
+    for bulletin in saved_bulletins:
+        tr = index_soup.new_tag("tr")
+        table.insert(1, tr)
+        
+        for i in range(4):
+            th = index_soup.new_tag("th")
+            tr.insert(0, th)
+
+        th_list = tr.findAll("th")
+        
+        with open("./bulletins/bulletinsInfo.json", "r") as read_json:
+            data = json.load(read_json)[bulletin[:-5]]
+            
+            #time
+            th_list[0].insert(0, data["time"])
+
+            #subject
+            subject = index_soup.new_tag("a", href=f"./bulletins/{data['id']}.html")
+            th_list[1].insert(0, subject)
+            th_list[1].find("a").insert(0, data["title"])
+
+            #comments
+            th_list[2].insert(0, data["comment_count"]+" comments")
+
+            #id
+            th_list[3].insert(0, data["id"])
+
+with open("./index.html", "w", encoding="utf-8") as write_index:
+    write_index.write(str(index_soup))
