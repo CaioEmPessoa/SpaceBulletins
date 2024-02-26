@@ -113,15 +113,14 @@ with open("./bulletins/bulletinsInfo.json", "w") as write_json:
 ## I wanted to use js but it can't read local json so i'm doing this
 
 saved_bulletins = os.listdir("./bulletins")
-saved_bulletins.remove("example.html")
 saved_bulletins.remove("bulletinsInfo.json")
 
 with open("./index.html", "r", encoding="utf-8") as read_index:
     index_soup = BeautifulSoup(read_index.read(), "html.parser")
-    table = index_soup.find("table")
+    table = index_soup.find("tbody", {"id":"bulletins-table"})
     
     #clear all previous bullletins
-    for t in table.findAll("tr")[:-1]:
+    for t in table.findAll("tr"):
         t.decompose()
 
     for bulletin in saved_bulletins:
