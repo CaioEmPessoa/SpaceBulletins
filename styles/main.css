@@ -12,6 +12,7 @@ a{color:#1E40AF;color:var(--darker-blue);text-decoration:none;}
 a:hover,a:active{color:#c00;text-decoration:underline;}
 p{font-size:0.875em;font-size:max(0.875em, 12px);}
 main{background:white;color:black;padding:6px 0px;font-size:80%;}
+main h2 {text-align: center;}
 main .left,main .right{padding:10px;}
 .bulletin .comments .heading h4{margin:0;display:inline-block;}
 .bulletin .comments .heading{padding:10px 7px;border-top:2px solid rgba(0, 0, 0, 0.4);margin-top:10px;}
