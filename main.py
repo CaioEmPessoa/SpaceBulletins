@@ -16,6 +16,12 @@ load_dotenv()
 EMAIL = os.getenv("EMAIL")
 PASSWORD = os.getenv("PASSWORD")
 USER_ID = os.getenv("USER_ID")
+
+if EMAIL=="your-email-here" or PASSWORD=="your-password-here" or USER_ID=="target-id":
+    print("PLEASE ADD YOUR INFO INTO .ENV FILE.")
+    input()
+    exit()
+
 SPACEHEY_URL = "https://spacehey.com/"
 BULLETINS_SITE = SPACEHEY_URL + "userbulletins?id=" + USER_ID
 
@@ -26,9 +32,14 @@ options = Options()
 
 # don't open the broser
 options.add_argument("--headless")
+options.add_argument("--silent")
+options.add_argument("--log-level=3")
+
 
 # don't kills chrome when code ends
-#options.add_experimental_option("detach", True) 
+#options.add_experimental_option("detach", True)
+
+#options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
 
 # Donwload driver (If needed) and starts it
@@ -45,9 +56,21 @@ pswrd_field.send_keys(PASSWORD)
 
 # it has to be two times
 pswrd_field.submit()
+
+if driver.current_url == "https://auth.spacehey.com/":
+    print("INVALID LOGIN INFORMATION.")
+    input()
+    exit()
+
 pswrd_field.submit()
 
+
 driver.get(BULLETINS_SITE)
+
+if "Error 4040" in BeautifulSoup(driver.page_source, 'html.parser').find("body").get_text():
+    print("INVALID ID.")
+    input()
+    exit()
 
 ### now its in the logged in and on the right website ###
 
@@ -152,3 +175,8 @@ with open("./index.html", "r", encoding="utf-8") as read_index:
 
 with open("./index.html", "w", encoding="utf-8") as write_index:
     write_index.write(str(index_soup))
+
+
+print("Finished saving bulletins.")
+input()
+exit()
